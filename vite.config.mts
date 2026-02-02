@@ -13,15 +13,14 @@ export default function ({ mode }: ConfigEnv): UserConfig {
   const env = loadEnv(mode, root);
   const viteEnv = wrapperEnv(env);
 
-  const devOptimizeDepsInclude: Array<string> = ['eruda', 'vant/es,@varlet/ui'];
+  const devOptimizeDepsInclude: Array<string> = ['eruda'];
   if (!isProduction) {
     const excludedDirs = ['utils', 'style', 'composables'];
     const __dirname = dirname(fileURLToPath(import.meta.url));
 
     // 需要自动优化的 UI 库
     const uiLibraries = [
-      { name: 'vant/es', path: 'node_modules/vant/es' },
-      // { name: '@nutui/nutui/dist/packages', path: 'node_modules/@nutui/nutui/dist/packages' }
+      { name: '@nutui/nutui/dist/packages', path: 'node_modules/@nutui/nutui/dist/packages' }
     ];
 
     uiLibraries.forEach((lib) => {
@@ -39,8 +38,6 @@ export default function ({ mode }: ConfigEnv): UserConfig {
               if (dirName !== 'locale') {
                 devOptimizeDepsInclude.push(`${lib.name}/${dirName}/style/css`);
               }
-            } else if (lib.name === 'vant/es') {
-              devOptimizeDepsInclude.push(`${lib.name}/${dirName}/style/index`);
             }
           });
       } catch (err) {
@@ -80,7 +77,7 @@ export default function ({ mode }: ConfigEnv): UserConfig {
           quietDeps: true,
           silenceDeprecations: ['legacy-js-api'],
           // 配置 nutui 全局 scss 变量
-          additionalData: `@use '@/assets/styles/vant.scss' as *;`,
+          additionalData: `@use '@/assets/styles/nutui.scss' as *;`,
         },
       },
     },

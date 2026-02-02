@@ -1,3 +1,4 @@
+import type { App } from 'vue';
 import { createI18n } from 'vue-i18n';
 
 export function loadLang() {
@@ -24,4 +25,9 @@ export function setLang(locale?: string) {
     localStorage.setItem('lang', locale);
   }
   i18n.global.locale.value = locale || localStorage.getItem('lang') || '';
+}
+
+export async function setupI18n(app: App) {
+  app.use(i18n);
+  await setLang();
 }

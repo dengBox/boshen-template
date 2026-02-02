@@ -1,5 +1,5 @@
-import type { ConfigProviderThemeVars } from 'vant';
+import type { ConfigProvider } from '@nutui/nutui';
 
-export const themeVars: ConfigProviderThemeVars = {
-  navBarHeight: '4px',
+export const themeVars: (typeof ConfigProvider)['themeVars'] = {
+  primaryColor: '#008000',
 };

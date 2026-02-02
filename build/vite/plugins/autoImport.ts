@@ -4,7 +4,6 @@
  */
 
 import AutoImport from 'unplugin-auto-import/vite';
-import { VantResolver } from '@vant/auto-import-resolver';
 
 export const ConfigAutoImportPlugin = () => {
   return AutoImport({
@@ -20,6 +19,6 @@ export const ConfigAutoImportPlugin = () => {
     eslintrc: {
       enabled: true,
     },
-    resolvers: [VantResolver()],
+    resolvers: [],
   });
 };

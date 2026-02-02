@@ -1,6 +1,6 @@
 import axios from 'axios';
 import type { AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
-import { showLoadingToast, showToast, closeToast } from 'vant';
+import { showToast } from '@nutui/nutui';
 // import { clear } from '../storage';
 import { useGlobalStore } from '@/store';
 const globalState = useGlobalStore().globalState;
@@ -50,46 +50,46 @@ service.interceptors.request.use(
 
 service.interceptors.response.use(
   (response: AxiosResponse) => {
-    closeToast();
+    showToast.hide();
     const res = response.data;
     if (res.status !== 200) {
-      showToast(res.msg);
+      showToast.text(res.msg);
       return Promise.reject(res.msg || 'Error');
     } else {
       return res.data;
     }
   },
   (error: AxiosError) => {
-    closeToast();
+    showToast.hide();
     console.log('err：' + error);
     if (error.name === 'CanceledError') return;
     if (error.name === 'AxiosError' && error.message?.includes('timeout')) {
-      showToast('超时');
+      showToast.fail('超时');
       return Promise.reject(error);
     }
-    showToast((error?.response?.data as any)?.message || 'Error');
+    showToast.fail((error?.response?.data as any)?.message || 'Error');
     switch (true) {
       case !error.response:
-        showToast('网络异常，请检查您的网络连接是否正常！');
+        showToast.fail('网络异常，请检查您的网络连接是否正常！');
         break;
       case error?.response?.status === 401:
-        showToast('当前用户没有访问该页面资源的权限！');
+        showToast.fail('当前用户没有访问该页面资源的权限！');
         // if (window.shsc && typeof window.shsc.closePage === 'function') {
         //   window.shsc.closePage();
         // }
         break;
       case error?.response?.status === 404:
-        showToast(error?.toString());
+        showToast.fail(error?.toString());
         break;
       case error?.response?.status === 403:
-        showToast((error?.response?.data as any).message || 'Error');
+        showToast.fail((error?.response?.data as any).message || 'Error');
         // if (window.shsc && typeof window.shsc.exitLogin === 'function') {
         //   window.shsc.exitLogin();
         // }
         // clear('', true);
         break;
       default:
-        showToast('系统错误');
+        showToast.fail('系统错误');
         break;
     }
     return Promise.reject(error);

@@ -1,5 +1,5 @@
 import { createFetch } from '@vueuse/core';
-import { showNotify } from 'vant';
+import { showToast } from '@nutui/nutui';
 
 const useFetchApi = createFetch({
   baseUrl: '',
@@ -18,7 +18,7 @@ const useFetchApi = createFetch({
         try {
           const jsonObj = data;
           if (jsonObj.code != 200) {
-            showNotify({ type: 'danger', message: jsonObj.message || 'Error' });
+            showToast.fail(jsonObj.message || 'Error');
           }
 
           ctx.data = jsonObj.data;
@@ -27,7 +27,7 @@ const useFetchApi = createFetch({
           ctx.data = null;
         }
       } else {
-        showNotify({ type: 'danger', message: response.statusText || 'Error' });
+        showToast.fail(response.statusText || 'Error');
         ctx.data = null;
       }
 
