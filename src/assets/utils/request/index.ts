@@ -1,5 +1,6 @@
 import axios from 'axios';
-import type { AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
+import type { RequestConfig } from '@/interface/common';
+import type { AxiosError, AxiosInstance, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
 import { showLoadingToast, showToast, closeToast } from 'vant';
 // import { clear } from '../storage';
 import { useGlobalStore } from '@/store';
@@ -30,10 +31,9 @@ const service: AxiosInstance = axios.create({
 });
 
 service.interceptors.request.use(
-  (config: InternalAxiosRequestConfig & { hideloading?: boolean }) => {
+  (config: InternalAxiosRequestConfig & { showLoading?: boolean }) => {
     setHeader(config.headers);
-    // loading
-    if (!config.hideloading) {
+    if (config.showLoading) {
       showLoadingToast({
         message: '加载中...',
         forbidClick: true,
@@ -50,7 +50,9 @@ service.interceptors.request.use(
 
 service.interceptors.response.use(
   (response: AxiosResponse) => {
-    closeToast();
+    if ((response.config as InternalAxiosRequestConfig & { showLoading?: boolean }).showLoading) {
+      closeToast();
+    }
     const res = response.data;
     if (res.status !== 200) {
       showToast(res.msg);
@@ -60,7 +62,9 @@ service.interceptors.response.use(
     }
   },
   (error: AxiosError) => {
-    closeToast();
+    if ((error.config as InternalAxiosRequestConfig & { showLoading?: boolean }).showLoading) {
+      closeToast();
+    }
     console.log('err：' + error);
     if (error.name === 'CanceledError') return;
     if (error.name === 'AxiosError' && error.message?.includes('timeout')) {
@@ -96,19 +100,19 @@ service.interceptors.response.use(
   },
 );
 
-export const get = <T = any>({ url, config = {} }: { url: string; config?: AxiosRequestConfig }): Promise<T> => {
+export const get = <T = any>({ url, config = {} }: { url: string; config?: RequestConfig }): Promise<T> => {
   return service.get(url, config);
 };
 
-export const post = <T = any>({ url, body = {}, config = {} }: { url: string; body?: object; config?: AxiosRequestConfig }): Promise<T> => {
+export const post = <T = any>({ url, body = {}, config = {} }: { url: string; body?: object; config?: RequestConfig }): Promise<T> => {
   return service.post(url, body, config);
 };
 
-export const put = <T = any>({ url, body = {}, config }: { url: string; body?: object; config?: AxiosRequestConfig }): Promise<T> => {
+export const put = <T = any>({ url, body = {}, config }: { url: string; body?: object; config?: RequestConfig }): Promise<T> => {
   return service.put(url, body, config);
 };
 
-export const remove = <T = any>({ url, config = {} }: { url: string; config?: AxiosRequestConfig }): Promise<T> => {
+export const remove = <T = any>({ url, config = {} }: { url: string; config?: RequestConfig }): Promise<T> => {
   return service.delete(url, config);
 };
 

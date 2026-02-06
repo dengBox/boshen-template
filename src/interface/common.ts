@@ -1,3 +1,5 @@
+import type { AxiosRequestConfig } from 'axios';
+
 export type HttpHeader = {
   tenantCode: string;
   sceneCode: string;
@@ -7,4 +9,8 @@ export type HttpHeader = {
 
 export type GlobalState = HttpHeader & {
   token: string;
+};
+
+export type RequestConfig = AxiosRequestConfig & {
+  showLoading?: boolean;
 };
